@@ -1,47 +1,37 @@
+{% load browserid %}
 <!DOCTYPE html>
-<html>
-    <head class='base'>
-        <title>{{ title }}</title>
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css"
+          rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    {% block css %}{% endblock %}
+</head>
+<body>
+{% browserid_info %}
+<div class="container">
 
-        <link href="{{ STATIC_URL }}css/dg_style.css" rel="stylesheet">
-        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <div class="authentication">
+        {% if user.is_authenticated %}
+            {% browserid_logout text='Logout' %}
 
-      {% block extra_head %}
-      {% endblock extra_head %}
-    </head>
-
-    {# if there is a course location, init function #}
-    <body {% if course and course.lat and course.lon %}onload="init(){% endif %}">
-      <div class="container">
-        <div id="top-menu" class="masthead">
-          <a href="{% url 'index' %}">Home</a>
-
-          {% if request.user.is_authenticated %}
-            | <a href="/accounts/logout/">Sign Out</a>
-          {% else %}
-            | <a href="/accounts/login/">Sign In</a>
-          {% endif %}
-
-        </div><!-- end top-menu -->
-
-            {% if messages %}
-              <div>
-                <strong>Messages:</strong>
-                <ul>
-            {% for message in messages %}
-            <li>{{message}}</li>
-            {% endfor %}
-                </ul>
-              </div>
+            {% if user.is_superuser %}
+                | <a href="/admin/">Admin Interface</a>
             {% endif %}
+        {% else %}
+            {% browserid_login text='Login' %}
+        {% endif %}
+    </div>
 
-            {% block content %}
-            {% endblock content %}
+    {% block content %}{% endblock %}
+</div>
 
-      </div><!-- end container -->
-    </body>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+{% browserid_js %}
+{% block js %}{% endblock %}
+</body>
 </html>
-

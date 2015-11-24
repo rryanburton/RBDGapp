@@ -1,5 +1,5 @@
 from django.contrib import admin
-from golfstats.models import Event, Course, Hole, Team, Score
+from .models import Event, Course, Hole, Team, Score
 
 
 class HoleInline(admin.TabularInline):

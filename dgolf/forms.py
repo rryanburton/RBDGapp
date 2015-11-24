@@ -3,7 +3,7 @@ from crispy_forms.layout import Submit
 from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 
-from golfstats.models import Score
+from .models import Score
 
 
 class EditScoreForm(ModelForm):

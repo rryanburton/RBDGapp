@@ -7,7 +7,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from django.conf.urls import include, patterns, url
 from django.contrib import admin
 from django.views.generic import TemplateView
-from golfstats.views import home, events, teams, scores, edit_score, add_score
+from dgolf.views import home, events, teams, scores, edit_score, add_score
 
 
 admin.autodiscover()

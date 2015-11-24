@@ -2,9 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from golfstats.forms import EditScoreForm
-from golfstats.functions import can_edit_team_score
-from golfstats.models import Event, Team, Score, Hole
+from .forms import EditScoreForm
+from .functions import can_edit_team_score
+from .models import Event, Team, Score, Hole
 
 
 def home(request):

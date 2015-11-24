@@ -1,0 +1,11 @@
+{% extends 'dgolf/../base.html' %}
+{% block content %}
+    <h1>Golf Stats</h1>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'events' %}">Events</a>
+    {% else %}
+        <p>Log in to view your events.</p>
+    {% endif %}
+
+{% endblock %}

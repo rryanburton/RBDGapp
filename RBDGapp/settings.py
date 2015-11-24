@@ -5,11 +5,11 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    ('Your Name', 'errors@teamreply.com'),
-)
-
-MANAGERS = ADMINS
+# ADMINS = (
+#     ('Your Name', 'errors@teamreply.com'),
+# )
+#
+# MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
@@ -20,7 +20,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
         'OPTIONS': {
-            'autocommit': True,
+            # 'autocommit': True,
         }
     },
 }
@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'US/Eastern'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -100,10 +100,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'golfstats.urls'
+ROOT_URLCONF = 'RBDGapp.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'golfstats.wsgi.application'
+WSGI_APPLICATION = 'RBDGapp.wsgi.application'
 
 TEMPLATE_DIRS = (
 # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'crispy_forms',
-    'golfstats',
+    'dgolf',
 )
 
 # A sample logging configuration. The only tangible logging
