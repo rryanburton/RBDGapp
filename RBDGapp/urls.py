@@ -2,20 +2,26 @@
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Add an import:  from blog import urls as blog_urls
-    2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+
+from django.conf.urls import include, patterns, url
 from django.contrib import admin
+from django.views.generic import TemplateView
+from golfstats.views import home, events, teams, scores, edit_score, add_score
+
+
+admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^$', home),
+    url(r'^events$', events, name='events'),
+    url(r'^events/(?P<event_id>\d+)/teams$', teams, name='teams'),
+    url(r'^events/(?P<event_id>\d+)/teams/(?P<team_id>\d+)/scores$', scores, name='scores'),
+    url(r'^events/(?P<event_id>\d+)/teams/(?P<team_id>\d+)/scores/(?P<score_id>\d+)$', edit_score, name='edit-score'),
+    url(r'^events/(?P<event_id>\d+)/teams/(?P<team_id>\d+)/scores/(?P<hole_id>\d+)/add$', add_score, name='add-score'),
+    url(r'^not-allowed$', TemplateView.as_view(template_name='not-allowed.html'), name='not-allowed'),
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    (r'^admin/', include(admin.site.urls)),
+    (r'^browserid/', include('django_browserid.urls')),
 ]

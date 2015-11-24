@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<!-- OPEN STREET MAP -->
+<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/score_chart.js"></script>
+
+{% if request.session.map_provider == 'google' %}
+  <!-- google maps -->
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbVquKG9BcYwP43AGo4XoZS1Rl9NIgZHo&sensor=false"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/google_course_map.js"></script>
+{% else %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/course_map.js"></script>
+{% endif %}
+
+<script type="text/javascript">
+
+//** MAP VARIABLES  **//
+var courseLat = undefined;
+var courseLon = undefined;
+{% if course.lat and course.lon %}
+  courseLat = {{ course.lat }};
+  courseLon = {{ course.lon }};
+{% endif %}
+
+//** CHART VARIABLES **//
+// nine baskets scores
+var nine_score_arr = new Array();
+
+  {% for d, v in data.nine_scores %}
+    arr = new Array();
+    // make UTC date from (year, month-1, day)
+    var year = {{ d|date:"Y" }};
+    var month = {{ d|date:"m" }};
+    var day = {{ d|date:"d" }};
+    arr.push(Date.UTC(year, month-1, day));
+    arr.push({{ v }});
+    nine_score_arr.push(arr);
+  {% endfor %}
+
+
+// eighteen basket scores
+var eighteen_score_arr = new Array();
+{% if data.eighteen_scores %}
+  {% for d, v in  data.eighteen_scores %}
+    // make UTC date from (year, month-1, day)
+    var year = {{ d|date:"Y" }};
+    var month = {{ d|date:"m" }};
+    var day = {{ d|date:"d" }};
+    arr.push(Date.UTC(year, month-1, day));
+    arr.push({{ v }});
+    eighteen_score_arr.push(arr);
+  {% endfor %}
+{% endif %}
+
+
+</script>
+
+{% endblock extra_head %}
+<script>
+  $(function() {
+    $( "#id_created" ).datepicker();
+  });
+</script>
+
+
+{% block content %}
+
+  {# form errors #}
+
+  <h1>{{ course.name }}</h1>
+
+  <p>Map Provider: <a href=".?map=google">Google</a> | <a href=".?map=osm">OpenLayers</a></p>
+  <div id="map-canvas" class="sixteen columns"></div>
+  <div id="map" class="sixteen columns"></div>
+
+  <div class="clearing" style="margin-bottom:30px"></div>
+
+
+  {% if request.user.is_authenticated %}
+
+    <p>{{ course.description }}</p>
+    <hr />
+
+  <div class="row-fluid">
+    <div class="span4">
+      <h3>Record your score</h3>
+      <form method="POST" action=".">
+
+        {% csrf_token %}
+
+          {{ form.as_p }}
+
+        <p><input type="submit" value="Submit Score">
+      </form>
+    </div>
+
+    <div id="course_data" class="span8">
+
+    {# --- user scores --- #}
+
+    <h3>Your {{ course.name }} data</h3>
+
+    {% if data %}
+
+      {% if data.last_round %}
+        <p>Last Played: <strong>{{ data.last_round.created }}</strong></p>
+        <p>Last Score: <strong>{{ data.last_round.score }}</strong> ({{ data.last_round.baskets }} baskets)<p>
+      {% endif %}
+
+      <table>
+        <th></th>
+        <th><strong>Nine Baskets</strong></th>
+        <th><strong>Eighteen Baskets</strong></th>
+        <tr class="even">
+          <td>Best</td>
+          <td>
+            {% if data.nine_min %}
+                {{ data.nine_min.1 }}
+            {% else %}No data
+            {% endif %}
+          </td>
+          <td>
+             {% if data.eighteen_min %}
+                {{ data.eighteen_min }}
+            {% else %}No data
+            {% endif %}
+          </td>
+        </tr>
+        <tr class="odd">
+          <td>Worst</td>
+          <td>
+            {% if data.nine_max %}
+                {{ data.nine_max.1 }}
+            {% else %}No data
+            {% endif %}
+          </td>
+          <td>
+             {% if data.eighteen_max %}
+                {{ data.eighteen_max }}
+            {% else %}No data
+            {% endif %}
+          </td>
+        </tr>
+        <tr class="even">
+          <td>Avg</td>
+          <td>
+            {% if data.nine_avg %}
+                {{ data.nine_avg }}
+
+            {% else %}No data
+            {% endif %}
+          </td>
+          <td>
+            {% if data.eighteen_avg %}
+                {{ data.eighteen_avg }}
+
+            {% else %}No data
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+
+      <div id="score_chart">
+      </div>
+
+    {% else %}
+    <h1>Hey! You need to play more!</h1>
+
+    {% endif %}
+
+  </div>
+
+
+  {% else %}
+  <div>
+    <h1>Sign in to start recording you scores for {{ course.name }}!</h1>
+  </div>
+  {% endif %}
+
+
+
+{% endblock content %}
